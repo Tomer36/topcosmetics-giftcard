@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>Top Cosmetics - Gift Card</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap" rel="stylesheet">
 <style>
@@ -47,7 +44,7 @@ h1{color:#8b5e3c;font-size:1rem;font-weight:400;text-align:center;margin-top:4px
 </head>
 <body>
 
-<h1>Top Cosmetics — Gift Card 🎁 (build 2026-03-09-3)</h1>
+<h1>🎁 Top Cosmetics — Gift Card</h1>
 
 <div class="tpl-tabs">
   <button class="tpl-tab active" id="tplBtn1" onclick="switchTemplate(1)">Template 1</button>
@@ -98,19 +95,8 @@ var tpl1Img = new Image();
 var tpl2Img = new Image();
 var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
-var MAIN_Y_TWEAK = 0;
-var WISH_Y_TWEAK = 0;
-var WISH_LINE_TWEAK = 1;
 
-if(document.fonts && document.fonts.load){
-  document.fonts
-    .load("600 " + FONT_SIZE + "px '" + FONT + "'")
-    .then(function(){ return document.fonts.load("600 " + WISH_FONT_SIZE + "px '" + FONT + "'"); })
-    .then(function(){ fontLoaded = true; drawCard(); })
-    .catch(function(){ fontLoaded = true; drawCard(); });
-} else {
-  fontLoaded = true;
-}
+document.fonts.ready.then(function(){ fontLoaded = true; drawCard(); });
 tpl1Img.onload = function(){ tpl1Ready = true; drawCard(); };
 tpl2Img.onload = function(){ tpl2Ready = true; drawCard(); };
 tpl1Img.src = TPL1_SRC;
@@ -125,19 +111,16 @@ function switchTemplate(n){
 }
 
 function wrapBox(text, fontSize, maxW){
-  // Deterministic wrapping by approximate character capacity.
-  // Avoids browser-specific canvas measureText differences (iPhone vs Android).
   var paragraphs = text.split(/\r?\n|\r/);
   var allLines = [];
-  var approxCharW = fontSize * 0.58;
-  var maxChars = Math.max(8, Math.floor(maxW / approxCharW));
+  ctx.font = "600 " + fontSize + "px '" + FONT + "', sans-serif";
   for(var p = 0; p < paragraphs.length; p++){
     var words = paragraphs[p].split(/\s+/).filter(function(w){ return w.length > 0; });
     if(words.length === 0){ allLines.push(""); continue; }
     var line = words[0];
     for(var i = 1; i < words.length; i++){
       var test = line + " " + words[i];
-      if(test.length <= maxChars){
+      if(ctx.measureText(test).width <= maxW){
         line = test;
       } else {
         allLines.push(line);
@@ -169,11 +152,11 @@ function drawCard(){
   ctx.direction = "rtl";
   ctx.font = "600 " + FONT_SIZE + "px '" + FONT + "', sans-serif";
 
-  if(toVal)       ctx.fillText(toVal, POS.to.x, POS.to.y + MAIN_Y_TWEAK);
-  if(forLines[0]) ctx.fillText(forLines[0], POS.for1.x, POS.for1.y + MAIN_Y_TWEAK);
-  if(forLines[1]) ctx.fillText(forLines[1], POS.for2.x, POS.for2.y + MAIN_Y_TWEAK);
-  if(forLines[2]) ctx.fillText(forLines[2], POS.for3.x, POS.for3.y + MAIN_Y_TWEAK);
-  if(fromVal)     ctx.fillText(fromVal, POS.from.x, POS.from.y + MAIN_Y_TWEAK);
+  if(toVal)       ctx.fillText(toVal, POS.to.x, POS.to.y);
+  if(forLines[0]) ctx.fillText(forLines[0], POS.for1.x, POS.for1.y);
+  if(forLines[1]) ctx.fillText(forLines[1], POS.for2.x, POS.for2.y);
+  if(forLines[2]) ctx.fillText(forLines[2], POS.for3.x, POS.for3.y);
+  if(fromVal)     ctx.fillText(fromVal, POS.from.x, POS.from.y);
 
   // Wish field - template 2 only
   if(currentTpl === 2){
@@ -183,12 +166,12 @@ function drawCard(){
       var lines, totalH;
       while(fs >= WISH_MIN_FONT){
         lines = wrapBox(wishVal, fs, WISH_BOX_W);
-        totalH = lines.length * (fs * 1.3);
+        totalH = lines.length * (fs * 1.4);
         if(totalH <= WISH_BOX_H) break;
         fs -= 2;
       }
-      var lineH = (fs * 1.3) * WISH_LINE_TWEAK;
-      var startY = WISH_POS.y + WISH_Y_TWEAK;
+      var lineH = fs * 1.4;
+      var startY = WISH_POS.y;
       ctx.font = "600 " + fs + "px '" + FONT + "', sans-serif";
       ctx.fillStyle = "#4a3525";
       ctx.textAlign = "center";
@@ -241,5 +224,4 @@ async function shareCard(){
 </script>
 </body>
 </html>
-
 
