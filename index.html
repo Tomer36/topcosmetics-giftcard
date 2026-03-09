@@ -44,7 +44,7 @@ h1{color:#8b5e3c;font-size:1rem;font-weight:400;text-align:center;margin-top:4px
 </head>
 <body>
 
-<h1>🎁 Top Cosmetics — Gift Card wwewewewe</h1>
+<h1>🎁 Top Cosmetics — Gift Card</h1>
 
 <div class="tpl-tabs">
   <button class="tpl-tab active" id="tplBtn1" onclick="switchTemplate(1)">Template 1</button>
@@ -96,7 +96,8 @@ var tpl2Img = new Image();
 var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-var IOS_Y_OFFSET = isIOS ? 8 : 0;
+var IOS_MAIN_Y_OFFSET = isIOS ? 10 : 0;
+var IOS_WISH_Y_OFFSET = isIOS ? 0 : 0;
 
 document.fonts.ready.then(function(){ fontLoaded = true; drawCard(); });
 tpl1Img.onload = function(){ tpl1Ready = true; drawCard(); };
@@ -154,11 +155,11 @@ function drawCard(){
   ctx.direction = "rtl";
   ctx.font = "600 " + FONT_SIZE + "px '" + FONT + "', sans-serif";
 
-  if(toVal)       ctx.fillText(toVal, POS.to.x, POS.to.y + IOS_Y_OFFSET);
-  if(forLines[0]) ctx.fillText(forLines[0], POS.for1.x, POS.for1.y + IOS_Y_OFFSET);
-  if(forLines[1]) ctx.fillText(forLines[1], POS.for2.x, POS.for2.y + IOS_Y_OFFSET);
-  if(forLines[2]) ctx.fillText(forLines[2], POS.for3.x, POS.for3.y + IOS_Y_OFFSET);
-  if(fromVal)     ctx.fillText(fromVal, POS.from.x, POS.from.y + IOS_Y_OFFSET);
+  if(toVal)       ctx.fillText(toVal, POS.to.x, POS.to.y + IOS_MAIN_Y_OFFSET);
+  if(forLines[0]) ctx.fillText(forLines[0], POS.for1.x, POS.for1.y + IOS_MAIN_Y_OFFSET);
+  if(forLines[1]) ctx.fillText(forLines[1], POS.for2.x, POS.for2.y + IOS_MAIN_Y_OFFSET);
+  if(forLines[2]) ctx.fillText(forLines[2], POS.for3.x, POS.for3.y + IOS_MAIN_Y_OFFSET);
+  if(fromVal)     ctx.fillText(fromVal, POS.from.x, POS.from.y + IOS_MAIN_Y_OFFSET);
 
   // Wish field - template 2 only
   if(currentTpl === 2){
@@ -173,7 +174,7 @@ function drawCard(){
         fs -= 2;
       }
       var lineH = fs * 1.4;
-      var startY = WISH_POS.y + IOS_Y_OFFSET;
+      var startY = WISH_POS.y + IOS_WISH_Y_OFFSET;
       ctx.font = "600 " + fs + "px '" + FONT + "', sans-serif";
       ctx.fillStyle = "#4a3525";
       ctx.textAlign = "center";
