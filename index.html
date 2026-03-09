@@ -98,11 +98,9 @@ var tpl1Img = new Image();
 var tpl2Img = new Image();
 var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
-var UA = navigator.userAgent || "";
-var isIOS = /iPad|iPhone|iPod/.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-var MAIN_Y_TWEAK = isIOS ? -12 : 0;
-var WISH_Y_TWEAK = isIOS ? -20 : 0;
-var WISH_LINE_TWEAK = isIOS ? 0.88 : 1;
+var MAIN_Y_TWEAK = 0;
+var WISH_Y_TWEAK = 0;
+var WISH_LINE_TWEAK = 1;
 
 if(document.fonts && document.fonts.load){
   document.fonts
@@ -127,16 +125,19 @@ function switchTemplate(n){
 }
 
 function wrapBox(text, fontSize, maxW){
+  // Deterministic wrapping by approximate character capacity.
+  // Avoids browser-specific canvas measureText differences (iPhone vs Android).
   var paragraphs = text.split(/\r?\n|\r/);
   var allLines = [];
-  ctx.font = "600 " + fontSize + "px '" + FONT + "', sans-serif";
+  var approxCharW = fontSize * 0.58;
+  var maxChars = Math.max(8, Math.floor(maxW / approxCharW));
   for(var p = 0; p < paragraphs.length; p++){
     var words = paragraphs[p].split(/\s+/).filter(function(w){ return w.length > 0; });
     if(words.length === 0){ allLines.push(""); continue; }
     var line = words[0];
     for(var i = 1; i < words.length; i++){
       var test = line + " " + words[i];
-      if(ctx.measureText(test).width <= maxW){
+      if(test.length <= maxChars){
         line = test;
       } else {
         allLines.push(line);
