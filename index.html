@@ -97,7 +97,7 @@ var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 var IOS_MAIN_Y_OFFSET = isIOS ? 10 : 0;
-var IOS_WISH_Y_OFFSET = isIOS ? -70 : 0;
+var IOS_WISH_Y_OFFSET = isIOS ? -50 : 0;
 
 document.fonts.ready.then(function(){ fontLoaded = true; drawCard(); });
 tpl1Img.onload = function(){ tpl1Ready = true; drawCard(); };
