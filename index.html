@@ -44,7 +44,7 @@ h1{color:#8b5e3c;font-size:1rem;font-weight:400;text-align:center;margin-top:4px
 </head>
 <body>
 
-<h1>🎁 Top Cosmetics — Gift Cardwawaw</h1>
+<h1>🎁 Top Cosmetics — Gift Card</h1>
 
 <div class="tpl-tabs">
   <button class="tpl-tab active" id="tplBtn1" onclick="switchTemplate(1)">Template 1</button>
@@ -97,7 +97,7 @@ var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 var IOS_MAIN_Y_OFFSET = isIOS ? 10 : 0;
-var IOS_WISH_Y_OFFSET = isIOS ? -6 : 0;
+var IOS_WISH_Y_OFFSET = isIOS ? -20 : 0;
 
 document.fonts.ready.then(function(){ fontLoaded = true; drawCard(); });
 tpl1Img.onload = function(){ tpl1Ready = true; drawCard(); };
