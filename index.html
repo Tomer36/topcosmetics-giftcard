@@ -95,6 +95,13 @@ var tpl1Img = new Image();
 var tpl2Img = new Image();
 var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
+var UA = navigator.userAgent || "";
+var isIOSDevice = /iPad|iPhone|iPod/.test(UA) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+var isWebKitEngine = /WebKit/i.test(UA);
+var isIOSWebKit = isIOSDevice && isWebKitEngine;
+var MAIN_Y_TWEAK = isIOSWebKit ? -10 : 0;
+var WISH_Y_TWEAK = isIOSWebKit ? -16 : 0;
+var WISH_LINE_TWEAK = isIOSWebKit ? 0.9 : 1;
 
 if(document.fonts && document.fonts.load){
   document.fonts
@@ -169,11 +176,11 @@ function drawCard(){
   ctx.direction = "rtl";
   ctx.font = "600 " + FONT_SIZE + "px '" + FONT + "', sans-serif";
 
-  if(toVal)       ctx.fillText(toVal, POS.to.x, POS.to.y);
-  if(forLines[0]) ctx.fillText(forLines[0], POS.for1.x, POS.for1.y);
-  if(forLines[1]) ctx.fillText(forLines[1], POS.for2.x, POS.for2.y);
-  if(forLines[2]) ctx.fillText(forLines[2], POS.for3.x, POS.for3.y);
-  if(fromVal)     ctx.fillText(fromVal, POS.from.x, POS.from.y);
+  if(toVal)       ctx.fillText(toVal, POS.to.x, POS.to.y + MAIN_Y_TWEAK);
+  if(forLines[0]) ctx.fillText(forLines[0], POS.for1.x, POS.for1.y + MAIN_Y_TWEAK);
+  if(forLines[1]) ctx.fillText(forLines[1], POS.for2.x, POS.for2.y + MAIN_Y_TWEAK);
+  if(forLines[2]) ctx.fillText(forLines[2], POS.for3.x, POS.for3.y + MAIN_Y_TWEAK);
+  if(fromVal)     ctx.fillText(fromVal, POS.from.x, POS.from.y + MAIN_Y_TWEAK);
 
   // Wish field - template 2 only
   if(currentTpl === 2){
@@ -187,8 +194,8 @@ function drawCard(){
         if(totalH <= WISH_BOX_H) break;
         fs -= 2;
       }
-      var lineH = getMeasuredLineHeight(fs);
-      var startY = WISH_POS.y;
+      var lineH = getMeasuredLineHeight(fs) * WISH_LINE_TWEAK;
+      var startY = WISH_POS.y + WISH_Y_TWEAK;
       ctx.font = "600 " + fs + "px '" + FONT + "', sans-serif";
       var baseMetrics = ctx.measureText("مA");
       var ascent = baseMetrics.actualBoundingBoxAscent || (fs * 0.8);
