@@ -96,7 +96,15 @@ var tpl2Img = new Image();
 var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
 
-document.fonts.ready.then(function(){ fontLoaded = true; drawCard(); });
+if(document.fonts && document.fonts.load){
+  document.fonts
+    .load("600 " + FONT_SIZE + "px '" + FONT + "'")
+    .then(function(){ return document.fonts.load("600 " + WISH_FONT_SIZE + "px '" + FONT + "'"); })
+    .then(function(){ fontLoaded = true; drawCard(); })
+    .catch(function(){ fontLoaded = true; drawCard(); });
+} else {
+  fontLoaded = true;
+}
 tpl1Img.onload = function(){ tpl1Ready = true; drawCard(); };
 tpl2Img.onload = function(){ tpl2Ready = true; drawCard(); };
 tpl1Img.src = TPL1_SRC;
@@ -130,6 +138,15 @@ function wrapBox(text, fontSize, maxW){
     allLines.push(line);
   }
   return allLines;
+}
+
+function getMeasuredLineHeight(fontSize){
+  ctx.font = "600 " + fontSize + "px '" + FONT + "', sans-serif";
+  var m = ctx.measureText("مA");
+  var ascent = m.actualBoundingBoxAscent || (fontSize * 0.8);
+  var descent = m.actualBoundingBoxDescent || (fontSize * 0.2);
+  var raw = ascent + descent;
+  return Math.max(fontSize * 1.05, raw * 1.12);
 }
 
 function drawCard(){
@@ -166,19 +183,21 @@ function drawCard(){
       var lines, totalH;
       while(fs >= WISH_MIN_FONT){
         lines = wrapBox(wishVal, fs, WISH_BOX_W);
-        totalH = lines.length * (fs * 1.4);
+        totalH = lines.length * getMeasuredLineHeight(fs);
         if(totalH <= WISH_BOX_H) break;
         fs -= 2;
       }
-      var lineH = fs * 1.4;
+      var lineH = getMeasuredLineHeight(fs);
       var startY = WISH_POS.y;
       ctx.font = "600 " + fs + "px '" + FONT + "', sans-serif";
+      var baseMetrics = ctx.measureText("مA");
+      var ascent = baseMetrics.actualBoundingBoxAscent || (fs * 0.8);
       ctx.fillStyle = "#4a3525";
       ctx.textAlign = "center";
-      ctx.textBaseline = "top";
+      ctx.textBaseline = "alphabetic";
       ctx.direction = "rtl";
       for(var i = 0; i < lines.length; i++){
-        ctx.fillText(lines[i], WISH_POS.x, startY + i * lineH);
+        ctx.fillText(lines[i], WISH_POS.x, startY + ascent + i * lineH);
       }
       // Reset baseline for consistency
       ctx.textBaseline = "bottom";
