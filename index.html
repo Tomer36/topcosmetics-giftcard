@@ -44,7 +44,7 @@ h1{color:#8b5e3c;font-size:1rem;font-weight:400;text-align:center;margin-top:4px
 </head>
 <body>
 
-<h1>🎁 Top Cosmetics — Gift Card</h1>
+<h1>Top Cosmetics — Gift Card 🎁</h1>
 
 <div class="tpl-tabs">
   <button class="tpl-tab active" id="tplBtn1" onclick="switchTemplate(1)">Template 1</button>
@@ -95,11 +95,9 @@ var tpl1Img = new Image();
 var tpl2Img = new Image();
 var tpl1Ready = false, tpl2Ready = false;
 var fontLoaded = false;
-var ASSET_VERSION = "20260309b";
-// Use one fixed layout across all browsers/devices for consistent output.
-var MAIN_Y_TWEAK = -10;
-var WISH_Y_TWEAK = -16;
-var WISH_LINE_TWEAK = 0.9;
+var MAIN_Y_TWEAK = 0;
+var WISH_Y_TWEAK = 0;
+var WISH_LINE_TWEAK = 1;
 
 if(document.fonts && document.fonts.load){
   document.fonts
@@ -112,8 +110,8 @@ if(document.fonts && document.fonts.load){
 }
 tpl1Img.onload = function(){ tpl1Ready = true; drawCard(); };
 tpl2Img.onload = function(){ tpl2Ready = true; drawCard(); };
-tpl1Img.src = TPL1_SRC + "?v=" + ASSET_VERSION;
-tpl2Img.src = TPL2_SRC + "?v=" + ASSET_VERSION;
+tpl1Img.src = TPL1_SRC;
+tpl2Img.src = TPL2_SRC;
 
 function switchTemplate(n){
   currentTpl = n;
@@ -143,15 +141,6 @@ function wrapBox(text, fontSize, maxW){
     allLines.push(line);
   }
   return allLines;
-}
-
-function getMeasuredLineHeight(fontSize){
-  ctx.font = "600 " + fontSize + "px '" + FONT + "', sans-serif";
-  var m = ctx.measureText("مA");
-  var ascent = m.actualBoundingBoxAscent || (fontSize * 0.8);
-  var descent = m.actualBoundingBoxDescent || (fontSize * 0.2);
-  var raw = ascent + descent;
-  return Math.max(fontSize * 1.05, raw * 1.12);
 }
 
 function drawCard(){
@@ -188,21 +177,19 @@ function drawCard(){
       var lines, totalH;
       while(fs >= WISH_MIN_FONT){
         lines = wrapBox(wishVal, fs, WISH_BOX_W);
-        totalH = lines.length * getMeasuredLineHeight(fs);
+        totalH = lines.length * (fs * 1.3);
         if(totalH <= WISH_BOX_H) break;
         fs -= 2;
       }
-      var lineH = getMeasuredLineHeight(fs) * WISH_LINE_TWEAK;
+      var lineH = (fs * 1.3) * WISH_LINE_TWEAK;
       var startY = WISH_POS.y + WISH_Y_TWEAK;
       ctx.font = "600 " + fs + "px '" + FONT + "', sans-serif";
-      var baseMetrics = ctx.measureText("مA");
-      var ascent = baseMetrics.actualBoundingBoxAscent || (fs * 0.8);
       ctx.fillStyle = "#4a3525";
       ctx.textAlign = "center";
-      ctx.textBaseline = "alphabetic";
+      ctx.textBaseline = "top";
       ctx.direction = "rtl";
       for(var i = 0; i < lines.length; i++){
-        ctx.fillText(lines[i], WISH_POS.x, startY + ascent + i * lineH);
+        ctx.fillText(lines[i], WISH_POS.x, startY + i * lineH);
       }
       // Reset baseline for consistency
       ctx.textBaseline = "bottom";
@@ -248,4 +235,5 @@ async function shareCard(){
 </script>
 </body>
 </html>
+
 
